@@ -1,40 +1,26 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from '@apollo/react-hooks';
-import gpl from 'graphql-tag';
+import { FETCH_POSTS_QUERY } from '../util/graphql';
 import { Grid, Loader } from 'semantic-ui-react';
 import PostCard from '../components/PostCard';
-
-const FETCH_POSTS_QUERY = gpl`
-query getPosts {
-    getPosts {
-      id
-      body
-      createdAt
-      username
-      comments{
-        id
-        username
-        createdAt
-        body
-      }
-      likes{
-        id
-        username
-        createdAt
-      }
-      likeCount
-      commentCount
-    }
-}
-`
+import { AuthContext } from '../context/auth';
+import PostForm from '../components/PostForm';
 
 function Home() {
     const { loading, data: { getPosts : posts }} = useQuery(FETCH_POSTS_QUERY);
+    const { user } = useContext(AuthContext);
     return (
         <Grid columns={3} divided>
             <Grid.Row className="page-title">
                 <h1>Recently Post</h1>
-            </Grid.Row>               
+            </Grid.Row>   
+            <Grid.Row>
+                { user && (
+                    <Grid.Column>
+                        <PostForm />
+                    </Grid.Column>
+                )}
+            </Grid.Row>            
             <Grid.Row>
                 {loading ? (
                     <Loader active>
