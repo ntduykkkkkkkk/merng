@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Card, Image, Label, Icon } from 'semantic-ui-react'
 import monment from 'moment';
 import { Link } from 'react-router-dom';
+import gpl from 'graphql-tag';
+import { AuthContext } from '../context/auth';
 
 function likePost(){
     console.log("Like")
@@ -12,6 +14,7 @@ function commentOnPost(){
 }
 
 function PostCard({post: {body, id, username, createdAt, likeCount, commentCount, likes}}){
+    const { user } = useContext(AuthContext)
     return (
         <Card fluid>
             <Card.Content>
@@ -37,9 +40,38 @@ function PostCard({post: {body, id, username, createdAt, likeCount, commentCount
                     {commentCount}
                 </Label>
             </Button>
+            { user && (
+                <Button color='red'>
+                    Delete
+                </Button>
+            )}
+            
             </Card.Content>
         </Card>
     )
 }
 
+const DELETE_POST_MUTATION = gpl`
+    mutation deletePost($postID: String!){
+        deletePost(postID: $postID){
+            id
+            username
+            body
+            createdAt
+            likes{
+                id
+                username
+                createdAt
+            }
+            comments{
+                id
+                username
+                body
+                createdAt
+            }
+            likeCount
+            commentCount
+        }
+    }
+`
 export default PostCard;
