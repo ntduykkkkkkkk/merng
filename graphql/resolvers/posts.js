@@ -36,6 +36,9 @@ module.exports = {
                 username: user.username,
                 createdAt: new Date().toISOString()
             });
+            if(post.body.trim() === ''){
+                throw new AuthenticationError('Post must be not blank')
+            }
             const post = await newPost.save();
 
             context.pubsub.publish('NEW_POST', {

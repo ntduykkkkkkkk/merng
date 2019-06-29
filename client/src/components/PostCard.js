@@ -1,13 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { Button, Card, Image, Label, Icon } from 'semantic-ui-react'
 import monment from 'moment';
 import { Link } from 'react-router-dom';
 import gpl from 'graphql-tag';
 import { AuthContext } from '../context/auth';
-
-function likePost(){
-    console.log("Like")
-}
+import LikeButton from './LikeButton';
 
 function commentOnPost(){
     console.log("comment")
@@ -24,25 +21,18 @@ function PostCard({post: {body, id, username, createdAt, likeCount, commentCount
                 <Card.Description>{body}</Card.Description>
             </Card.Content>
             <Card.Content extra>
-            <Button as='div' labelPosition='right' onClick={likePost}>
-                <Button color='teal' basic>
-                    <Icon name='heart' />
-                </Button>
-                <Label as='a' basic color='teal' pointing='left'>
-                    {likeCount}
-                </Label>
-            </Button>
-            <Button as='div' labelPosition='right' onClick={commentOnPost}>
+            <LikeButton user={user} post={{ id, likes, likeCount }}/>
+            <Button as='div' labelPosition='right' onClick={commentOnPost} post={`post/${id}`}>
                 <Button color='blue' basic>
                     <Icon name='comment' />
                 </Button>
-                <Label as='a' basic color='teal' pointing='left'>
+                <Label basic color='teal' pointing='left'>
                     {commentCount}
                 </Label>
             </Button>
-            { user && (
-                <Button color='red'>
-                    Delete
+            { user && user.username === username && (
+                <Button color='red' floated="right" style={{margin: 0}}>
+                    <Icon name='trash' />
                 </Button>
             )}
             
